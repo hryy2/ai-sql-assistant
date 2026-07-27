@@ -1,3 +1,4 @@
+# 此文件负责执行SQL
 from app.database import get_connection
 
 
@@ -17,4 +18,21 @@ def get_locations():
 
     conn.close()
     # SQLite返回sqlite3.Row, FastAPI 不认识,转成dict，FastAPI就能自动变成JSON
+    return [dict(row) for row in rows]
+
+
+def execute_sql(sql: str):
+    """
+    Execute a SQL query and return the results.
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(sql)
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
     return [dict(row) for row in rows]
