@@ -23,16 +23,28 @@ def get_locations():
 
 def execute_sql(sql: str):
     """
-    Execute a SQL query and return the results.
+    Execute SQL and return the query results.
     """
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(sql)
+    try:
+        cursor.execute(sql)
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
 
-    conn.close()
+        return {
+            "success": True,
+            "results": [dict(row) for row in rows]
+        }
 
-    return [dict(row) for row in rows]
+    except Exception as e:
+
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+    finally:
+        conn.close()

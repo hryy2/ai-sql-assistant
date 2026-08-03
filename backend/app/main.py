@@ -2,12 +2,20 @@
 from fastapi import FastAPI
 from app.crud import get_locations, execute_sql
 from app.services.ai_service import generate_sql
-from pydantic import BaseModel
+from app.models import QueryRequest
+from fastapi.middleware.cors import CORSMiddleware
 # 创建一个 FastAPI 应用
 app = FastAPI()
-# 无需自己解析JSON
-class QueryRequest(BaseModel):
-    question: str
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # 装饰器（Decorator），告诉 FastAPI：如果有人访问：/，就运行下面的函数
 @app.get("/")
@@ -25,10 +33,10 @@ def query(request: QueryRequest):
 
     sql = generate_sql(request.question)
 
-    results = execute_sql(sql)
+    query_result = execute_sql(sql)
 
     return {
         "question": request.question,
         "sql": sql,
-        "results": results
+        **query_result
     }
