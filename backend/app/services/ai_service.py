@@ -1,30 +1,51 @@
-# 负责Question->GPT->SQL
 from dotenv import load_dotenv
 from openai import OpenAI
+
 from app.prompts import SYSTEM_PROMPT
+
 import os
 
-# Load environment variables from .env
 load_dotenv()
 
-# Create OpenAI client
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY")
 )
 
+
 def generate_sql(question: str) -> str:
-    """
-    Mock SQL generation.
-    This function will later call the OpenAI API.
-    """
+
     print("System Prompt Loaded")
 
-    question = question.lower()
+    try:
 
-    if "location" in question:
-        return """
-        SELECT *
-        FROM locations;
-        """
+        response = client.responses.create(
 
-    return "-- Unable to generate SQL."
+            model="gpt-4.1-mini",
+
+            input=[
+                {
+                    "role": "system",
+                    "content": SYSTEM_PROMPT,
+                },
+                {
+                    "role": "user",
+                    "content": question,
+                },
+            ],
+
+            temperature=0,
+
+        )
+
+        sql = response.output_text.strip()
+        sql = sql.replace("```sql", "")
+        sql = sql.replace("```", "")
+        sql = sql.strip()
+
+        return sql
+
+    except Exception as e:
+
+        print(e)
+
+        return "-- Unable to generate SQL."

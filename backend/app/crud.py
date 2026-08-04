@@ -1,7 +1,6 @@
 # 此文件负责执行SQL
 from app.database import get_connection
 
-
 def get_locations():
     # 调用database.py
     conn = get_connection()
@@ -19,7 +18,6 @@ def get_locations():
     conn.close()
     # SQLite返回sqlite3.Row, FastAPI 不认识,转成dict，FastAPI就能自动变成JSON
     return [dict(row) for row in rows]
-
 
 def execute_sql(sql: str):
     """

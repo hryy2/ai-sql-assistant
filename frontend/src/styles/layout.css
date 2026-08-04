@@ -21,3 +21,13 @@
 
   padding: 24px;
 }
+
+.recharts-wrapper *:focus {
+  outline: none !important;
+}
+
+.recharts-sector:focus,
+.recharts-bar-rectangle:focus,
+.recharts-rectangle:focus {
+  outline: none !important;
+}
