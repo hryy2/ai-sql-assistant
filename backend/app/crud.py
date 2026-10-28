@@ -1,12 +1,12 @@
-# 此文件负责执行SQL
+# Executing SQL queries
 from app.database import get_connection
 
 def get_locations():
-    # 调用database.py
+    # Call database.py
     conn = get_connection()
 
     cursor = conn.cursor()
-    # 执行 SQL
+    # Execute SQL
     cursor.execute("""
         SELECT *
         FROM locations
@@ -16,7 +16,7 @@ def get_locations():
     rows = cursor.fetchall()
 
     conn.close()
-    # SQLite返回sqlite3.Row, FastAPI 不认识,转成dict，FastAPI就能自动变成JSON
+    # SQLite returns sqlite3.Row, FastAPI doesn't recognize it, so convert to dict, and FastAPI can automatically convert it to JSON
     return [dict(row) for row in rows]
 
 def execute_sql(sql: str):
